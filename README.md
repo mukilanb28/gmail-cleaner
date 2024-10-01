@@ -35,7 +35,7 @@ REDIRECT_URI=<Your_Google_Redirect_URI>
 REFRESH_TOKEN=<Your_Gmail_Refresh_Token>
 
 ## Installation
-# Backend (Node.js & Express.js)
+** Backend (Node.js & Express.js) **
 Install backend dependencies:
 ### `npm install`
 ### `node index.js`
