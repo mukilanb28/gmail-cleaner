@@ -50,7 +50,7 @@ Navigate to webapi directory:
 npm install
 ```
 ```bash
-node index.js
+node src/index.js
 ```
 
 # Frontend (React.js & Material UI)
