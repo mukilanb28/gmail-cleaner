@@ -1,0 +1,49 @@
+@use '../../common/styles/variables' as *;
+@use '../../common/styles/common' as *;
+
+.form-contents-wrapper {
+	@include flex-col;
+	gap: 40px;
+	padding: 20px 50px;
+
+	.control-item {
+		>label {
+			font-size: 18px;
+			font-family: Roboto-Medium
+		}
+
+		@include flex-row-vertical-center;
+		gap: 50px;
+
+		input[type=number] {
+			padding: 5px;
+			width: 100px;
+		}
+
+		.radio-grp {
+			@include flex-row;
+			gap: 20px
+		}
+	}
+
+	.footer {
+		@include flex-row;
+		justify-content: space-between;
+
+		button {
+			padding: 5px 20px;
+			cursor: pointer;
+
+			&.save {
+				background-color: #007f00;
+				color: white;
+				border: 1px solid transparent;
+			}
+
+			&.save.disabled {
+				background-color: grey;
+				cursor: not-allowed;
+			}
+		}
+	}
+}

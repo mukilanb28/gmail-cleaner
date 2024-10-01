@@ -1,0 +1,18 @@
+@use '../../common/styles/variables' as *;
+@use '../../common/styles/common' as *;
+
+.header-wrapper {
+	.left-pane {
+		@include flex-row-vertical-center;
+		gap: 1%;
+		margin: 1% 5% 1% 20px;
+
+		>div {
+			font-family: Roboto-Medium;
+			font-size: 30px;
+			color: #E04F3F;
+		}
+	}
+
+	border: 1px solid black;
+}

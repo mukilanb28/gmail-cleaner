@@ -1,0 +1,24 @@
+{
+	"compilerOptions": {
+		"outDir": "./build/",
+		"sourceMap": true,
+		"noImplicitAny": true,
+		"module": "ESNext",
+		"target": "es2015",
+		"jsx": "react-jsx",
+		"allowJs": true,
+		"moduleResolution": "node",
+		"esModuleInterop": true,
+		"allowSyntheticDefaultImports": true,
+		"downlevelIteration": true,
+		"strictNullChecks": false,
+		"noEmit": true,
+		"resolveJsonModule": true,
+		"isolatedModules": true,
+		"strict": true,
+		"forceConsistentCasingInFileNames": false,
+		"noFallthroughCasesInSwitch": true,
+		"skipLibCheck": true
+	},
+	"files": ["src", "./custom.d.ts"]
+}

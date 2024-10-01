@@ -1,0 +1,27 @@
+@use '../../common/styles/variables' as *;
+@use '../../common/styles/common' as *;
+
+.layout {
+	.scrollable {
+		display: flex;
+
+		aside {
+			border: 1px solid black;
+			width: 20%;
+			height: 100vh;
+			overflow-y: hidden;
+		}
+
+		section {
+			@include flex-col;
+			flex: auto;
+
+			main {
+				@include flex-row;
+				flex-grow: 1;
+				width: 100%;
+			}
+		}
+	}
+
+}

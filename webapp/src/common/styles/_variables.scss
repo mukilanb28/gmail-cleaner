@@ -1,0 +1,46 @@
+@font-face {
+	font-family: 'Roboto-Light';
+	src:
+		local('Roboto-Light'),
+		url(../../assets/fonts/Roboto/Roboto-Light.ttf) format('truetype');
+}
+
+@font-face {
+	font-family: 'Roboto-Medium';
+	src:
+		local('Roboto-Medium'),
+		url(../../assets/fonts/Roboto/Roboto-Medium.ttf) format('truetype');
+}
+
+@font-face {
+	font-family: 'Roboto-Regular';
+	src:
+		local('Roboto-Regular'),
+		url(../../assets/fonts/Roboto/Roboto-Regular.ttf) format('truetype');
+}
+
+//font names
+$robotoLight: Roboto-Light;
+$robotoMedium: Roboto-Medium;
+$robotoRegular: Roboto-Regular;
+$robotoThin: Roboto-Thin;
+$robotoBold: Roboto-Bold;
+
+// color codes
+$white: #fff;
+$whitesmoke: whitesmoke;
+$black: #000;
+$blue: #002bbc;
+$green: #007f00;
+$raisinBlack: #232323;
+$light-secondary: #fafafa;
+$black-charcoal: #111111;
+$smoky-black: rgba(17, 17, 17, 0.92);
+$dim-charcoal: rgba(17, 17, 17, 0.64);
+$light-gray: #a1a1a1;
+$charcoal-gray: rgba(17, 17, 17, 0.51);
+$form-border: #979797;
+$warning-border: #ffee5c;
+$warning-bg: #fffff0;
+$form-table-border: #cccccc;
+$soft-gray: #dedede;
