@@ -53,7 +53,7 @@ Update credentials.json: Create a credentials.json(webapp/src.credentials.json) 
 Clone the repository
 
 ```bash
-git clone https://github.com/rahuldkjain/github-profile-readme-generator.git
+git clone https://github.com/mukilanb28/gmail-cleaner
 ```
 
 # Backend (Node.js)
