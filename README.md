@@ -29,6 +29,7 @@ This application is built using [Node.js](https://nodejs.org/en), [React.js](htt
 3. Enable the Gmail API for your project.
 4. Create OAuth2 credentials (OAuth consent screen and credentials setup).
 5. Download the credentials.json file and place it in the root directory of the project.
+
  **Note: For OAuth consent, ensure you configure scopes for accessing Gmail data.**
 
 Update credentials.json: Create a credentials.json(webapp/src.credentials.json) file with the following variables and update them based on your Google Cloud project:
@@ -53,7 +54,7 @@ Update credentials.json: Create a credentials.json(webapp/src.credentials.json) 
 Clone the repository
 
 ```bash
-git clone https://github.com/mukilanb28/gmail-cleaner
+git clone https://github.com/mukilanb28/gmail-cleaner.git
 ```
 
 # Backend (Node.js)
