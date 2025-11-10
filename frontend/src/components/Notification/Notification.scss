@@ -1,0 +1,28 @@
+.header-notification {
+	border: 1px solid #dedede;
+	background-color: skyblue;
+	color: black;
+	border-radius: 22px;
+	padding: 5px 0px;
+	width: 35%;
+	opacity: 0;
+	transform: translateY(-50px);
+	animation: slideIn 0.6s ease forwards;
+}
+
+@keyframes slideIn {
+	0% {
+		opacity: 0;
+		transform: translateY(-50px);
+	}
+
+	60% {
+		opacity: 1;
+		transform: translateY(10px);
+	}
+
+	100% {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}

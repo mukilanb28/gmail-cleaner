@@ -1,0 +1,131 @@
+// .profile-icon-btn {
+// 	border-radius: 5px;
+// 	background-color: #01579B;
+
+// }
+
+.profile-view {
+	position: relative;
+	display: inline-flex;
+
+	button.icon {
+		display: inline-flex;
+		align-items: center;
+		vertical-align: middle;
+		border: none;
+		background-color: rgba(0, 0, 0, 0);
+		padding: 0;
+		-webkit-user-select: none;
+		user-select: none;
+		transition: border-color 0.15s ease-in-out;
+		white-space: nowrap;
+
+
+		&:active,
+		&:focus,
+		&:focus-within {
+			outline: none
+		}
+	}
+
+	.icon-inner {
+		width: 35px;
+		height: 35px;
+		background-color: #e8e8e8;
+		font-size: 0.8125rem;
+		letter-spacing: 0.9px;
+		color: rgba(17, 17, 17, 0.84);
+		box-shadow: 0 0 0 1px rgba(0, 0, 0, 0), 0 0 0 3px rgba(0, 0, 0, 0);
+		transition: box-shadow 0.15s ease-in-out, color 0.15s ease-in-out, background-color 0.15s ease-in-out;
+		border-radius: 50%;
+		position: relative;
+		background-color: #01579B;
+
+		&:hover {
+			box-shadow: 0 0 0 1px #fff, 0 0 0 3px #dedede;
+		}
+	}
+
+	.abs-center {
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%, -50%);
+		color: white
+	}
+}
+
+.profile-view-dropdown-menu {
+	background-color: #E9EEF6;
+	min-width: 300px;
+	border-radius: 5px;
+	position: absolute;
+	inset: 2px 28px auto auto;
+	transform: translate(0px, 40px);
+	box-shadow: -3px 3px 5px rgba(0, 0, 0, 0.3);
+	font-size: 14px;
+	line-height: 20px;
+	padding: 15px 10px;
+	display: flex;
+	flex-direction: column;
+	gap: 20px;
+
+
+
+	.title {
+		font-family: 'Roboto';
+		font-weight: 500;
+	}
+
+	.body {
+		display: flex;
+		flex-direction: column;
+		gap: 12px;
+		align-items: center;
+		font-size: 22px;
+
+		.icon-inner {
+			width: 70px;
+			height: 70px;
+		}
+
+		.abs-center {
+			font-size: 28px;
+		}
+	}
+
+	.footer {
+		display: flex;
+		justify-content: center;
+		padding-top: 20px;
+	}
+
+	.logout {
+		cursor: pointer;
+
+		&:hover {
+			background-color: #dbdbdb;
+		}
+
+		>div {
+			display: flex;
+			gap: 12px;
+			align-items: center;
+
+		}
+
+		padding: 5px 10px;
+
+
+		border: 1px solid #dedede;
+		width: 35%;
+		border-radius: 25px;
+		background: #fefefe;
+		color: black;
+		width: 40%;
+
+		.btn-name {
+			margin-top: 2px;
+		}
+	}
+}

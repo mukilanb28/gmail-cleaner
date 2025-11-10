@@ -1,0 +1,18 @@
+.note-section {
+	background-color: white;
+	border: 1px solid rgba(100, 121, 143, 0.12);
+	border-radius: 12px;
+	padding: 18px 15px;
+	font-size: 13px;
+	display: flex;
+	align-items: flex-start;
+	gap: 5px;
+	width: fit-content;
+
+	span.text {
+		font-size: 17px;
+		text-align: left;
+	}
+
+
+}
