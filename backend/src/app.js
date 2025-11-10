@@ -31,7 +31,7 @@ app.use(express.json());
 
 // Enable CORS (restrict to known origin in production)
 const corsOptions = {
-	origin: 'http://localhost:5173',
+	origin: process.env.FRONTEND_URL,
 	methods: ['GET', 'POST', 'DELETE', 'PUT', 'PATCH'],
 	credentials: true,
 };
