@@ -8,7 +8,6 @@ const Checkbox = ({ checked, onChange, className }) => {
 				type="checkbox"
 				className="checkbox"
 				onChange={() => {
-					console.log('Clicked...');
 					onChange(!checked);
 				}}
 			/>

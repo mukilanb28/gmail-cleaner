@@ -38,7 +38,7 @@ exports.googleCallback = async (req, res) => {
 		const payload = ticket.getPayload();
 		const email = payload.email;
 		const name = payload.name;
-
+		console.log(`Auth success for ${email}`);
 		// Create JWT including profile info
 		const jwtToken = generateJWT({ tokens, email, name });
 		res.cookie('token', jwtToken, {

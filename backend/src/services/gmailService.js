@@ -31,7 +31,6 @@ async function aggregateSenders(
 	limit = Number(FETCH_LIMIT),
 	concurrency = Number(CONCURRENCY_LIMIT)
 ) {
-	console.log(`Fetch ${limit} messages`);
 	const gmail = google.gmail({ version: 'v1', auth });
 	const messages = await fetchMessages(auth, '', limit);
 
@@ -73,9 +72,6 @@ async function aggregateSenders(
 	for (let i = 0; i < messages.length; i += concurrency) {
 		const batch = messages.slice(i, i + concurrency);
 		await processBatch(batch);
-		console.log(
-			`Processed batch ${i / concurrency + 1} of ${i + concurrency} messages`
-		);
 	}
 
 	return Object.entries(senderCounts)
