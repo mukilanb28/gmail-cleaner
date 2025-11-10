@@ -27,7 +27,7 @@ export const AuthProvider = ({ children }) => {
 
 	// Login
 	const login = () => {
-		window.location.href = `${API_BASE_URL}/api/auth/login`;
+		window.location.href = `${API_BASE_URL}/auth/login`;
 	};
 
 	const handleLogout = async () => {
