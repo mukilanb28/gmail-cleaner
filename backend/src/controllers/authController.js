@@ -14,7 +14,7 @@ exports.googleAuth = (req, res) => {
 		access_type: 'offline',
 		prompt: 'consent',
 		scope: scopes,
-		redirect_uri: 'http://localhost:5000/api/auth/google/callback',
+		redirect_uri: process.env.REDIRECT_URI,
 	});
 	res.redirect(url);
 };
