@@ -43,8 +43,8 @@ exports.googleCallback = async (req, res) => {
 		const jwtToken = generateJWT({ tokens, email, name });
 		res.cookie('token', jwtToken, {
 			httpOnly: true, // frontend JS cannot read
-			secure: false, // true only in production with HTTPS
-			sameSite: 'lax', // allow cross-origin requests
+			secure: process.env.NODE_ENV === 'production',
+			sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
 			maxAge: 7 * 24 * 60 * 60 * 1000,
 			path: '/',
 		});
@@ -73,7 +73,7 @@ exports.logout = (req, res) => {
 	res.clearCookie('token', {
 		httpOnly: true,
 		secure: process.env.NODE_ENV === 'production',
-		sameSite: 'lax',
+		sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
 		path: '/',
 	});
 	res.status(200).json({ message: 'Logged out successfully' });
