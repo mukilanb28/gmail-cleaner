@@ -1,8 +1,8 @@
 // context/AuthContext.jsx
-import React, { createContext, useState, useEffect, useContext } from 'react';
-import axios from 'axios';
+import { createContext, useState, useEffect, useContext } from 'react';
 import { getMyProfile, logout, login } from '../api/gmailApi';
 import { useNavigate } from 'react-router-dom';
+const API_BASE_URL = import.meta.env.VITE_BACKEND_BASE_URL;
 
 const AuthContext = createContext();
 
@@ -27,7 +27,7 @@ export const AuthProvider = ({ children }) => {
 
 	// Login
 	const login = () => {
-		window.location.href = 'http://localhost:5000/api/auth/login';
+		window.location.href = `${API_BASE_URL}/api/auth/login`;
 	};
 
 	const handleLogout = async () => {
