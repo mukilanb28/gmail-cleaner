@@ -1,17 +1,27 @@
 const API_BASE_URL = import.meta.env.VITE_BACKEND_BASE_URL;
 
 // Fetch messages
-export async function fetchMessages() {
+export async function fetchMessages(onProgress, onResult) {
 	try {
-		const res = await fetch(`${API_BASE_URL}/gmail/aggregate`, {
-			method: 'GET',
-			credentials: 'include', // send HttpOnly cookie
-			headers: {
-				'Content-Type': 'application/json',
-			},
+		const eventSource = new EventSource(`${API_BASE_URL}/gmail/aggregate`, {
+			withCredentials: true,
 		});
-		if (!res.ok) throw new Error('Failed to fetch messages');
-		return await res.json(); // [{ senderName, emailCount }]
+
+		eventSource.addEventListener('progress', (e) => {
+			onProgress(Number(e.data));
+		});
+
+		eventSource.addEventListener('result', (e) => {
+			onResult(JSON.parse(e.data));
+			eventSource.close();
+		});
+
+		eventSource.onerror = (err) => {
+			console.error('SSE error:', err);
+			eventSource.close();
+		};
+
+		return eventSource;
 	} catch (err) {
 		console.error('Error fetching messages:', err);
 		return [];
@@ -21,13 +31,13 @@ export async function fetchMessages() {
 // Delete messages
 export async function deleteMessages(senders) {
 	try {
-		const res = await fetch(`${API_BASE_URL}/messages`, {
+		const res = await fetch(`${API_BASE_URL}/gmail/messages`, {
 			method: 'DELETE',
-			credentials: 'include', // send HttpOnly cookie
+			credentials: 'include',
 			headers: {
 				'Content-Type': 'application/json',
 			},
-			body: JSON.stringify({ sender: senders }),
+			body: JSON.stringify(senders),
 		});
 		if (!res.ok) throw new Error('Failed to delete messages');
 		return await res.json();

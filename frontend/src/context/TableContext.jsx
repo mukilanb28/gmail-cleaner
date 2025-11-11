@@ -3,8 +3,8 @@ import React, {
 	useContext,
 	useEffect,
 	useState,
-	useTransition,
 	useMemo,
+	useRef,
 } from 'react';
 import { fetchMessages } from '../api/gmailApi';
 // Create context
@@ -16,7 +16,17 @@ export const useTable = () => useContext(TableContext);
 // Provider component
 export const TableProvider = ({ children }) => {
 	const [messages, setMessages] = useState([]);
-	const [isLoading, startTransition] = useTransition();
+	const [isLoading, setIsloading] = useState(false);
+	const [isDeleting, setIsDeleting] = useState(false);
+	const [percentage, setPercentage] = useState(0);
+	const eventSourceRef = useRef(null);
+
+	const cleanupEventSource = () => {
+		if (eventSourceRef.current) {
+			eventSourceRef.current.close();
+			eventSourceRef.current = null;
+		}
+	};
 
 	const selectedCount = useMemo(() => {
 		const msgs = messages.filter((msg) => msg.checked);
@@ -25,18 +35,19 @@ export const TableProvider = ({ children }) => {
 
 	useEffect(() => {
 		loadMessages();
+		return () => cleanupEventSource();
 	}, []);
 
-	const loadMessages = () => {
-		startTransition(async () => {
-			try {
-				let result = await fetchMessages();
-				result = result.map((item) => ({ ...item, checked: false }));
-				setMessages(result);
-			} catch (err) {
-				console.log(err);
-			}
+	const loadMessages = async () => {
+		setIsloading(true);
+		setPercentage(0);
+		cleanupEventSource();
+
+		const eventSource = await fetchMessages(setPercentage, (data) => {
+			setMessages(data.map((item) => ({ ...item, checked: false })));
+			setIsloading(false);
 		});
+		eventSourceRef.current = eventSource;
 	};
 
 	const onChangeCheckbox = (index, state) => {
@@ -56,11 +67,14 @@ export const TableProvider = ({ children }) => {
 	};
 	const value = {
 		isLoading,
+		percentage,
 		messages,
 		onChangeAll,
 		onChangeCheckbox,
 		onClickRefresh: handleRefresh,
 		selectedCount,
+		isDeleting,
+		toggleDeleting: (value) => setIsDeleting(value),
 	};
 	return (
 		<TableContext.Provider value={value}>{children}</TableContext.Provider>

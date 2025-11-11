@@ -1,52 +1,62 @@
 const { google } = require('googleapis');
 require('dotenv').config();
+const pLimit = require('p-limit').default;
 
-const FETCH_LIMIT = process.env.FETCH_MSG_LIMIT || 100;
-const CONCURRENCY_LIMIT = process.env.MSG_CONCURRENCY_LIMIT || 5;
+const FETCH_LIMIT = process.env.GMAIL_FETCH_LIMIT_PER_REQUEST || 100;
+const CONCURRENCY_LIMIT = process.env.GMAIL_MESSAGE_CONCURRENCY_LIMIT || 5;
+const MAX_LIMIT = process.env.GMAIL_MAX_FETCH_LIMIT || 500;
 
 // 🔹 Helper: Fetch message IDs (paginated)
-async function fetchMessages(auth, query = '', max = 100) {
+async function fetchMessages(auth, query = '', max) {
 	const gmail = google.gmail({ version: 'v1', auth });
 	const messages = [];
 	let nextPageToken = null;
+	const effectiveMax = Math.min(max, Number(MAX_LIMIT));
 
 	do {
+		const remaining = effectiveMax - messages.length;
+		const limit = Math.min(Number(FETCH_LIMIT), remaining);
+
 		const res = await gmail.users.messages.list({
 			userId: 'me',
-			maxResults: 100,
+			maxResults: limit,
 			q: query,
 			pageToken: nextPageToken,
 		});
 		messages.push(...(res.data.messages || []));
 		nextPageToken = res.data.nextPageToken;
-	} while (messages.length < max && nextPageToken);
+	} while (messages.length < effectiveMax && nextPageToken);
 
 	return messages.slice(0, max);
 }
 
-// 🔹 Aggregate by sender/domain
-
-async function aggregateSenders(
-	auth,
-	limit = Number(FETCH_LIMIT),
-	concurrency = Number(CONCURRENCY_LIMIT)
-) {
+async function aggregateSenders(res, auth) {
 	const gmail = google.gmail({ version: 'v1', auth });
-	const messages = await fetchMessages(auth, '', limit);
-
+	const messages = await fetchMessages(auth, '', FETCH_LIMIT);
 	const senderCounts = {};
 
-	// Process messages in batches of `concurrency`
-	const processBatch = async (batch) => {
-		const results = await Promise.allSettled(
-			batch.map(async (msg) => {
-				const res = await gmail.users.messages.get({
+	// Create a concurrency limiter
+	const limitFn = pLimit(Number(CONCURRENCY_LIMIT));
+
+	const total = messages.length;
+	let processed = 0;
+
+	// Initial progress (10%)
+	const initialPercent = 10;
+	const initialCompleted = (initialPercent / 100) * total;
+	res.write(`event: progress\ndata: ${initialPercent}\n\n`);
+
+	const tasks = messages.map((msg) =>
+		limitFn(async () => {
+			try {
+				const response = await gmail.users.messages.get({
 					userId: 'me',
 					id: msg.id,
 					format: 'metadata',
 					metadataHeaders: ['From'],
 				});
-				const header = res.data.payload.headers.find(
+
+				const header = response.data.payload.headers.find(
 					(h) => h.name === 'From'
 				);
 				if (!header) return;
@@ -55,25 +65,26 @@ async function aggregateSenders(
 				const match = from.match(/<([^>]+)>/);
 				const email = match ? match[1] : from;
 				const domain = email.split('@')[1]?.trim();
-
 				const key = domain || email;
+
 				senderCounts[key] = (senderCounts[key] || 0) + 1;
-			})
-		);
+			} catch (err) {
+				console.warn('Failed to fetch message:', err.message);
+			} finally {
+				processed++;
 
-		// Log failures (optional)
-		results
-			.filter((r) => r.status === 'rejected')
-			.forEach((r) =>
-				console.warn('Failed message fetch:', r.reason?.message)
-			);
-	};
+				// Update progress dynamically
+				const completed = Math.min(initialCompleted + processed, total);
+				const percent = ((completed / total) * 100).toFixed(2);
+				res.write(`event: progress\ndata: ${percent}\n\n`);
+			}
+		})
+	);
 
-	for (let i = 0; i < messages.length; i += concurrency) {
-		const batch = messages.slice(i, i + concurrency);
-		await processBatch(batch);
-	}
+	// Wait for all to complete
+	await Promise.all(tasks);
 
+	// Return sorted sender counts
 	return Object.entries(senderCounts)
 		.map(([sender, count]) => ({ sender, count }))
 		.sort((a, b) => b.count - a.count);
