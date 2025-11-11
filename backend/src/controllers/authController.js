@@ -63,7 +63,13 @@ exports.getMyProfile = (req, res) => {
 
 		const payload = verifyJWT(token); // utility to verify JWT
 		const { email, name } = payload;
-		res.json({ user: { email, name } });
+		res.json({
+			user: {
+				email,
+				name,
+				max_msg_count: process.env.GMAIL_MAX_FETCH_LIMIT,
+			},
+		});
 	} catch (err) {
 		res.status(401).json({ error: 'Invalid token' });
 	}
