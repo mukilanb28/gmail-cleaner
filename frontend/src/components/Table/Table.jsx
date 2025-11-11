@@ -16,7 +16,7 @@ const Table = () => {
 						{isLoading && (
 							<>
 								<span>Loading messages...</span>
-								<span>{percentage}%</span>
+								<span>{Math.floor(percentage)}%</span>
 							</>
 						)}
 					</div>
