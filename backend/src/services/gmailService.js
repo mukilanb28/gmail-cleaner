@@ -14,7 +14,6 @@ async function fetchMessages(auth, query = '', max) {
 	let nextPageToken = null;
 	const effectiveMax = Math.min(max, Number(MAX_LIMIT));
 
-	console.log(`Effective Max ${effectiveMax}`, max);
 	do {
 		const remaining = effectiveMax - messages.length;
 		const limit = Math.min(Number(FETCH_LIMIT), remaining);
@@ -34,7 +33,6 @@ async function fetchMessages(auth, query = '', max) {
 
 async function aggregateSenders(res, params, auth) {
 	const groupByDomain = params.groupByDomain || false;
-	console.log(`Effective Size `, params.processCount);
 	const gmail = google.gmail({ version: 'v1', auth });
 	const messages = await fetchMessages(auth, '', params.processCount || DEFAULT_LIMIT);
 	const senderCounts = {};
