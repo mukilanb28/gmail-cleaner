@@ -13,12 +13,16 @@ exports.aggregateSenders = async (req, res) => {
 	res.setHeader('Content-Type', 'text/event-stream');
 	res.setHeader('Cache-Control', 'no-cache');
 	res.flushHeaders();
+	const {
+		groupByDomain = false,
+		processCount = 500,
+	} = req.query;
 
 	try {
 		const payload = verifyJWT(token);
 		const gmailClient = new google.auth.OAuth2();
 		gmailClient.setCredentials(payload.tokens);
-		const result = await aggregateSenders(res, gmailClient);
+		const result = await aggregateSenders(res, { processCount, groupByDomain }, gmailClient);
 		res.write(`event: result\ndata: ${JSON.stringify(result)}\n\n`);
 		res.end();
 	} catch (err) {
@@ -32,13 +36,12 @@ exports.deleteMessages = async (req, res) => {
 	const token = req.cookies.token;
 	if (!token) return res.status(400).json({ error: 'Missing auth token' });
 
-	const senderObj = req.body;
+	const senderArray = req.body;
 	// Validate that body is a non-empty object
 	if (
-		!senderObj ||
-		typeof senderObj !== 'object' ||
-		Array.isArray(senderObj) ||
-		Object.keys(senderObj).length === 0
+		!senderArray ||
+		!Array.isArray(senderArray) ||
+		senderArray.length === 0
 	) {
 		return res.status(400).json({
 			error: 'Request body must be a JSON object, e.g. { "email@gmail.com": 50, "@domain.com": 20 }',
@@ -50,7 +53,7 @@ exports.deleteMessages = async (req, res) => {
 		const gmailClient = new google.auth.OAuth2();
 		gmailClient.setCredentials(payload.tokens);
 
-		const result = await moveMessagesToTrash(gmailClient, senderObj);
+		const result = await moveMessagesToTrash(gmailClient, senderArray);
 		res.json({
 			message: `Moved ${result.movedCount} messages to Trash`,
 			...result,
