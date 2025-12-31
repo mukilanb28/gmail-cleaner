@@ -67,7 +67,7 @@ async function aggregateSenders(res, params, auth) {
 				const match = from.match(/<([^>]+)>/);
 				const email = match ? match[1] : from;
 				const domain = email.split('@')[1]?.trim();
-				const key = groupByDomain ? domain : email;
+				const key = groupByDomain == 'true' ? domain : email;
 
 				senderCounts[key] = (senderCounts[key] || 0) + 1;
 			} catch (err) {
@@ -78,7 +78,7 @@ async function aggregateSenders(res, params, auth) {
 				// Update progress dynamically
 				const completed = Math.min(initialCompleted + processed, total);
 				const percent = ((completed / total) * 100).toFixed(2);
-				res.write(`event: progress\ndata: ${percent}\n\n`);
+				res.write(`event: progress\ndata: ${Math.floor(percent)}\n\n`);
 			}
 		})
 	);
