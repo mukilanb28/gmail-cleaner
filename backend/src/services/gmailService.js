@@ -5,6 +5,7 @@ const pLimit = require('p-limit').default;
 const FETCH_LIMIT = process.env.GMAIL_FETCH_LIMIT_PER_REQUEST || 100;
 const CONCURRENCY_LIMIT = process.env.GMAIL_MESSAGE_CONCURRENCY_LIMIT || 5;
 const MAX_LIMIT = process.env.GMAIL_MAX_FETCH_LIMIT || 500;
+const DEFAULT_LIMIT = process.env.GMAIL_DEFAULT_FETCH_LIMIT || 500;
 
 // 🔹 Helper: Fetch message IDs (paginated)
 async function fetchMessages(auth, query = '', max) {
@@ -13,6 +14,7 @@ async function fetchMessages(auth, query = '', max) {
 	let nextPageToken = null;
 	const effectiveMax = Math.min(max, Number(MAX_LIMIT));
 
+	console.log(`Effective Max ${effectiveMax}`, max);
 	do {
 		const remaining = effectiveMax - messages.length;
 		const limit = Math.min(Number(FETCH_LIMIT), remaining);
@@ -30,9 +32,11 @@ async function fetchMessages(auth, query = '', max) {
 	return messages.slice(0, max);
 }
 
-async function aggregateSenders(res, auth) {
+async function aggregateSenders(res, params, auth) {
+	const groupByDomain = params.groupByDomain || false;
+	console.log(`Effective Size `, params.processCount);
 	const gmail = google.gmail({ version: 'v1', auth });
-	const messages = await fetchMessages(auth, '', FETCH_LIMIT);
+	const messages = await fetchMessages(auth, '', params.processCount || DEFAULT_LIMIT);
 	const senderCounts = {};
 
 	// Create a concurrency limiter
@@ -65,7 +69,7 @@ async function aggregateSenders(res, auth) {
 				const match = from.match(/<([^>]+)>/);
 				const email = match ? match[1] : from;
 				const domain = email.split('@')[1]?.trim();
-				const key = domain || email;
+				const key = groupByDomain ? domain : email;
 
 				senderCounts[key] = (senderCounts[key] || 0) + 1;
 			} catch (err) {
@@ -86,13 +90,13 @@ async function aggregateSenders(res, auth) {
 
 	// Return sorted sender counts
 	return Object.entries(senderCounts)
-		.map(([sender, count]) => ({ sender, count }))
+		.map(([sender, count]) => ({ id: sender, sender, count }))
 		.sort((a, b) => b.count - a.count);
 }
 
 // 🔹 Move messages by sender or domain to Trash
 // 🔹 Move messages to Trash for multiple senders with limits
-async function moveMessagesToTrash(auth, senderObj) {
+async function moveMessagesToTrash(auth, payload) {
 	const gmail = google.gmail({ version: 'v1', auth });
 
 	let totalMoved = 0;
@@ -100,7 +104,7 @@ async function moveMessagesToTrash(auth, senderObj) {
 
 	// Process each sender in parallel
 	await Promise.all(
-		Object.entries(senderObj).map(async ([email, limitValue]) => {
+		payload.map(async ({ email, limitValue }) => {
 			const limit = Number(limitValue) || 100; // default limit
 			const query = email.includes('@') ? `from:${email}` : `from:@${email}`;
 

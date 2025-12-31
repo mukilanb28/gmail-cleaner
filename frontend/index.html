@@ -2,20 +2,89 @@
 <html lang="en">
 
 <head>
-	<meta charset="UTF-8" />
-	<link rel="shortcut icon" href="https://ssl.gstatic.com/ui/v1/icons/mail/rfr/gmail.ico" type="image/x-icon">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-	<title>Gmail Cleaner</title>
-	<link rel="icon" href="https://ssl.gstatic.com/ui/v1/icons/mail/rfr/logo_gmail_lockup_dark_1x_r2.png">
-	<link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
-	<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
-	<link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" rel="stylesheet">
+  <meta charset="UTF-8" />
+  <link rel="icon" href="/favicon.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Gmail-cleaner</title>
+  <style>
+    /* Fullscreen overlay */
+    #initial-loader {
+      position: fixed;
+      inset: 0;
+      background: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+    }
 
+    /* Center content */
+    .loader-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    /* Circle wrapper */
+    .loader-circle {
+      position: relative;
+      width: 80px;
+      height: 80px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* Spinner ring */
+    .spinner {
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+      border: 4px solid transparent;
+      border-top-color: #4285F4;
+      border-right-color: #EA4335;
+      border-bottom-color: #FBBC05;
+      border-left-color: #34A853;
+      animation: spin 1s linear infinite;
+    }
+
+    /* Gmail logo */
+    .gmail-logo {
+      z-index: 1;
+    }
+
+    /* Spin animation */
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+  </style>
 </head>
 
 <body>
-	<div id="root"></div>
-	<script type="module" src="/src/main.jsx"></script>
+  <div id="root">
+    <div id="initial-loader">
+      <div class="loader-container">
+        <div class="loader-circle">
+          <!-- Spinner -->
+          <div class="spinner"></div>
+
+          <!-- Gmail logo -->
+          <svg width="36" height="28" viewBox="0 0 512 512" class="gmail-logo">
+            <path fill="#EA4335"
+              d="M502.3 190.8L327.4 338.1c-21.8 18.2-53.1 18.2-74.9 0L9.7 190.8V462c0 27.6 22.4 50 50 50h392.6c27.6 0 50-22.4 50-50V190.8z" />
+            <path fill="#FBBC05"
+              d="M502.3 150.6v40.2L327.4 338.1c-21.8 18.2-53.1 18.2-74.9 0L9.7 190.8v-40.2l246.1 162.9L502.3 150.6z" />
+            <path fill="#34A853"
+              d="M9.7 150.6L256 313.5l246.3-162.9L452.3 90c-9.3-6.7-20.6-10-32.1-10H91.8c-11.5 0-22.8 3.3-32.1 10L9.7 150.6z" />
+            <path fill="#4285F4" d="M9.7 190.8L59.7 230V90l-50 40.6zM502.3 190.8L452.3 230V90l50 40.6z" />
+          </svg>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script type="module" src="/src/main.tsx"></script>
 </body>
 
 </html>
