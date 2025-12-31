@@ -30,7 +30,7 @@ export function ActionSection({
 
 }: ActionSectionProps) {
 
-  const { processCount, deleteByDomain, onChangeProcessCount, onChangeDeleteByDomain } = useFilter()
+  const { processCount, groupByDomain, onChangeProcessCount, onChangeGroupByDomain } = useFilter()
 
 
   return (
@@ -86,7 +86,7 @@ export function ActionSection({
           {/* Delete By Dropdown */}
           <div className="flex items-center gap-2">
             <span className="text-sm text-gray-700">Delete by:</span>
-            <Select value={deleteByDomain ? 'domain' : 'group'} onValueChange={() => onChangeDeleteByDomain(!deleteByDomain)}>
+            <Select value={groupByDomain ? 'domain' : 'group'} onValueChange={() => onChangeGroupByDomain(!groupByDomain)}>
               <SelectTrigger className="w-[180px] bg-white">
                 <SelectValue placeholder="Select option" />
               </SelectTrigger>

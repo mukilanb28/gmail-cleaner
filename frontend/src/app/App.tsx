@@ -22,7 +22,7 @@ export default function App() {
 
 
   const { user, isUserLoading, login, } = useAuth()
-  const { processCount, deleteByDomain, } = useFilter()
+  const { processCount, groupByDomain, } = useFilter()
 
   const { messages: srcMsgs, refresh, deleteData, isMessagesLoading, percentage, isMessageDeleting } = useGmailSenderStats();
 
@@ -34,7 +34,7 @@ export default function App() {
     if (user) {
       refresh();
     }
-  }, [user, processCount, deleteByDomain]);
+  }, [user, processCount, groupByDomain]);
 
 
   const handleLogin = () => {
@@ -112,11 +112,10 @@ export default function App() {
   // Show main application if logged in
   return (
     <div className="min-h-screen bg-white">
-      {isUserLoading && <GmailLoader />}
-
-      {(isMessagesLoading || isMessageDeleting) && <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center">
-        <Spinner percentage={percentage} isMessageDeleting={isMessageDeleting} />
-      </div>}
+      {isUserLoading ? <GmailLoader /> :
+        <>{(isMessagesLoading || isMessageDeleting) && <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center">
+          <Spinner percentage={percentage} isMessageDeleting={isMessageDeleting} />
+        </div>}</>}
 
 
 
