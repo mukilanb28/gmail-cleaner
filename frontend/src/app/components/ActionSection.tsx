@@ -83,9 +83,9 @@ export function ActionSection({
           </div>
 
 
-          {/* Delete By Dropdown */}
+          {/* Group By Dropdown */}
           <div className="flex items-center gap-2">
-            <span className="text-sm text-gray-700">Delete by:</span>
+            <span className="text-sm text-gray-700">Group by:</span>
             <Select value={groupByDomain ? 'domain' : 'group'} onValueChange={() => onChangeGroupByDomain(!groupByDomain)}>
               <SelectTrigger className="w-[180px] bg-white">
                 <SelectValue placeholder="Select option" />
